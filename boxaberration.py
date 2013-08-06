@@ -29,6 +29,8 @@ class BoxAberration:
 		self.scale = [1.0, 1.0, 1.0]
 		
 		self.pointselection = -1
+		
+		self.pg = None
 	def duplicate(self, newname):
 		newbox = BoxAberration(newname, [self.min[0], self.min[1], self.min[2]], [self.max[0], self.max[1], self.max[2]])
 		

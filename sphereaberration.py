@@ -34,6 +34,8 @@ class SphereAberration:
 		self.scale = [1.0, 1.0, 1.0]
 		
 		self.pointselection = -1
+		
+		self.pg = None
 	def duplicate(self, newname):
 		newsphere = SphereAberration(newname, self.x, self.y, self.z, self.r)
 		

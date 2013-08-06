@@ -34,6 +34,8 @@ class Plane:
 		self.transparent = False
 		
 		self.extension = 1000
+		
+		self.pg = None
 	def duplicate(self, newname):
 		newplane = Plane(newname, self.x, self.y, self.z, -self.c)
 		

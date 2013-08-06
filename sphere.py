@@ -32,6 +32,8 @@ class Sphere:
 		self.transparent = False
 		
 		self.pointselection = -1
+		
+		self.pg = None
 	def duplicate(self, newname):
 		newsphere = Sphere(newname, self.x, self.y, self.z, self.r)
 		

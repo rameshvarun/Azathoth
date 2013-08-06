@@ -28,6 +28,8 @@ class Box:
 		self.transparent = False
 		
 		self.pointselection = -1
+		
+		self.pg = None
 	def duplicate(self, newname):
 		newbox = Box(newname, [self.min[0], self.min[1], self.min[2]], [self.max[0], self.max[1], self.max[2]])
 		
