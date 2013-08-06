@@ -45,6 +45,8 @@ class SphereAberration:
 		
 		newsphere.reflectivity = self.reflectivity
 		
+		newsphere.scale = list( self.scale )
+		
 		return newsphere
 	def center(self):
 		return [self.x, self.y, self.z]

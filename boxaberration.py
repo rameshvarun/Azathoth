@@ -34,7 +34,7 @@ class BoxAberration:
 	def duplicate(self, newname):
 		newbox = BoxAberration(newname, [self.min[0], self.min[1], self.min[2]], [self.max[0], self.max[1], self.max[2]])
 		
-		newbox.scale = self.scale
+		newbox.scale = list( self.scale )
 		newbox.uniform = self.uniform
 		newbox.recieve = self.recieve
 		newbox.cast = self.cast
