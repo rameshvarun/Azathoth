@@ -9,6 +9,7 @@ import subprocess
 import os
 
 import gui
+import scripteditor
 
 import wx
 
@@ -41,11 +42,16 @@ def uniqueName(stub):
 
 #Clear the entire scene
 def clearScene():
+	#Clear both the GUI tree and the objects list
 	gui.tree_ctrl.DeleteAllItems()
 	objects.clear()
 	
+	#Re-add the root element of the scene tree
 	gui.treeroot = gui.tree_ctrl.AddRoot('Scene')
 	gui.tree_ctrl.ExpandAll()
+	
+	#Clear script
+	scripteditor.SetText( "" )
 	
 def newFile(event):
 	global currentfile
@@ -53,7 +59,12 @@ def newFile(event):
 	
 	clearScene()
 
-
+def getText(n):
+    rc = []
+    for node in n.childNodes:
+        if node.nodeType == node.TEXT_NODE:
+            rc.append(node.data)
+    return ''.join(rc)
 
 #Function that loads a scene from a file
 def openFile(event):
@@ -188,6 +199,9 @@ def openFile(event):
 		objects[name].cast = (sphere.getAttribute("cast") == "True")
 		
 		objects[name].treeitem = gui.tree_ctrl.AppendItem(gui.treeroot, name)
+		
+	for script in doc.getElementsByTagName("script"):
+		scripteditor.SetText( getText(script) )
 	
 def writeXML(filename):
 		
@@ -218,6 +232,10 @@ def writeXML(filename):
 		object.setAttribute("selected", str(obj.selected) )
 		
 		doc.documentElement.appendChild(object)
+		
+	script = doc.createElement("script")
+	script.appendChild( doc.createTextNode( scripteditor.GetText() ) )
+	doc.documentElement.appendChild(script)
 		
 	file = open(filename, "w")
 	file.write( doc.toprettyxml() )

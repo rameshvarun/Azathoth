@@ -1,8 +1,11 @@
 #File that handles all GUI-Related stuff
 import threading, os, sys, time
 import wx #import wxWidgets
+import wx.stc
 import wx.propgrid as wxpg
 import scene
+
+import scripteditor
 
 #Callback for exiting application
 def closeFile(event):
@@ -13,6 +16,7 @@ app = wx.App(False)
 evtloop = wx.EventLoop()
 old = wx.EventLoop.GetActive()
 wx.EventLoop.SetActive(evtloop)
+
 
 #Create main window
 frame = wx.Frame(None, wx.ID_ANY, "Non-Euclidean Level Editor", (10,10), (250,550))
@@ -25,6 +29,8 @@ runmenu = wx.Menu()
 frame.CreateStatusBar()
 
 frame.Bind(wx.EVT_CLOSE, closeFile)
+
+scripteditor.init()
 
 menuBar = wx.MenuBar()
 menuBar.Append(filemenu,"&File")
