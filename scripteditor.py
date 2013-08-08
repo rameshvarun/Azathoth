@@ -2,8 +2,6 @@ import wx
 
 from wx.stc import *
 
-script_ctrl = None
-
 def GetText():
 	global script_ctrl
 	return script_ctrl.GetText()
@@ -12,7 +10,7 @@ def SetText(text):
 	global script_ctrl
 	script_ctrl.SetText(text)
 	
-def init():
+def initialize():
 	global script_ctrl
 	
 	luakeywords = "and break do else elseif end for function if local nil not or repeat return then until while"

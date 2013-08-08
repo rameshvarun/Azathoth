@@ -3,13 +3,11 @@ from OpenGL.GLU import *
 
 from util import *
 
-import scene
-import gui
 
 import wx #import wxWidgets
 import wx.propgrid as wxpg
 
-class Sphere:
+class SphereAberration:
 	def __init__(self, name, x, y, z, r):
 		self.name = name
 		self.x = x
@@ -27,21 +25,25 @@ class Sphere:
 		
 		self.edit = False
 		
-		self.type = "Sphere"
+		self.type = "SphereAberration"
 		
 		self.transparent = False
+		
+		self.scale = [1.0, 1.0, 1.0]
 		
 		self.pointselection = -1
 		
 		self.pg = None
 	def duplicate(self, newname):
-		newsphere = Sphere(newname, self.x, self.y, self.z, self.r)
+		newsphere = SphereAberration(newname, self.x, self.y, self.z, self.r)
 		
 		newsphere.uniform = self.uniform
 		newsphere.recieve = self.recieve
 		newsphere.cast = self.cast
 		
 		newsphere.reflectivity = self.reflectivity
+		
+		newsphere.scale = list( self.scale )
 		
 		return newsphere
 	def center(self):
@@ -87,7 +89,7 @@ class Sphere:
 	def draw(self):
 		glEnable(GL_LIGHTING)
 		
-		glMaterialfv(GL_FRONT, GL_DIFFUSE, (1.0, 1.0, 1.0, 1.0))
+		glMaterialfv(GL_FRONT, GL_DIFFUSE, (1.0, 1.0, 1.0, 0.5))
 		
 		
 		
@@ -197,7 +199,16 @@ class Sphere:
 				gui.tree_ctrl.SetItemText(self.treeitem, self.name)
 			if p.GetName() == "Uniform":
 				self.uniform = p.GetValue()
+			
+			#Aberration Properties
+			if p.GetName() == "Scale.X":
+				self.scale[0] = p.GetValue()
+			if p.GetName() == "Scale.Y":
+				self.scale[1] = p.GetValue()
+			if p.GetName() == "Scale.Z":
+				self.scale[2] = p.GetValue()
 				
+			#Geometry Properties
 			if p.GetName() == "Center.X":
 				self.x = p.GetValue()
 			if p.GetName() == "Center.Y":
@@ -226,6 +237,13 @@ class Sphere:
 		
 		pg.Append( wxpg.FloatProperty("Radius", value=self.r) )
 		
+		#Aberration Properties
+		pg.Append( wxpg.PropertyCategory("Aberration") )
+		abID = pg.Append( wxpg.StringProperty("Scale", value="<composed>") )
+		pg.AppendIn (abID, wxpg.FloatProperty("X", value=self.scale[0]) )
+		pg.AppendIn (abID, wxpg.FloatProperty("Y", value=self.scale[1]) )
+		pg.AppendIn (abID, wxpg.FloatProperty("Z", value=self.scale[2]) )
+		
 		#Material Properties
 		pg.Append( wxpg.PropertyCategory("Material") )
 		pg.Append( wxpg.FloatProperty("Reflectivity", value=self.reflectivity) )
@@ -235,7 +253,6 @@ class Sphere:
 		
 		pg.Append( wxpg.BoolProperty("Recieve Shadows",value=self.recieve) )
 		pg.SetPropertyAttribute("Recieve Shadows", "UseCheckbox", True)
-		
 	def write(self, object):
 		object.setAttribute("x", str(self.x) )
 		object.setAttribute("y", str(self.y) )
@@ -245,3 +262,5 @@ class Sphere:
 		object.setAttribute("reflectivity", str(self.reflectivity) )
 		object.setAttribute("recieve", str(self.recieve) )
 		object.setAttribute("cast", str(self.cast) )
+		
+		object.setAttribute("scale", formatString(self.scale) )

@@ -3,15 +3,19 @@ from OpenGL.GLU import *
 
 from util import *
 
-import scene
 import gui
+import scene
 
 import wx #import wxWidgets
 import wx.propgrid as wxpg
 
 class Plane:
-	def __init__(self, name, x, y, z, c):
+	def __init__(self, name = None, x = 0, y = 1, z = 0, c = 0):
+		
 		self.name = name
+		
+		if self.name == None:
+			self.name = scene.uniqueName("Plane")
 		
 		n = norm( [x, y, z] )
 		
@@ -36,6 +40,17 @@ class Plane:
 		self.extension = 1000
 		
 		self.pg = None
+		
+		scene.objects[self.name] = self
+		self.treeitem = gui.tree_ctrl.AppendItem(gui.treeroot, self.name)
+		gui.tree_ctrl.ExpandAll()
+		
+		print "Added plane " + self.name
+		
+	@staticmethod
+	def create(event):
+		Plane()
+		
 	def duplicate(self, newname):
 		newplane = Plane(newname, self.x, self.y, self.z, -self.c)
 		

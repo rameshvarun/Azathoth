@@ -7,78 +7,84 @@ import scene
 
 import scripteditor
 
+import gameobjects
+
 #Callback for exiting application
 def closeFile(event):
 	os._exit(0)
 
-app = wx.App(False)
+def initialize():
+	global app, evtloop, frame, editframe, currentselection, tree_ctrl, treeroot
+	
+	app = wx.App(False)
+	
 
-evtloop = wx.EventLoop()
-old = wx.EventLoop.GetActive()
-wx.EventLoop.SetActive(evtloop)
-
-
-#Create main window
-frame = wx.Frame(None, wx.ID_ANY, "Non-Euclidean Level Editor", (10,10), (250,550))
-frame.Show(True)
-
-filemenu = wx.Menu()
-addmenu = wx.Menu()
-runmenu = wx.Menu()
-
-frame.CreateStatusBar()
-
-frame.Bind(wx.EVT_CLOSE, closeFile)
-
-scripteditor.init()
-
-menuBar = wx.MenuBar()
-menuBar.Append(filemenu,"&File")
-menuBar.Append(addmenu,"&Add")
-menuBar.Append(runmenu,"&Run")
-frame.SetMenuBar(menuBar)
-
-#Create all of the actions under the file menu
-new = filemenu.Append(wx.ID_NEW, "&New","Create a new scene.")
-open = filemenu.Append(wx.ID_OPEN, "&Open","Open an existing scene file.")
-save = filemenu.Append(wx.ID_SAVE, "&Save","Save the current scene file.")
-close = filemenu.Append(wx.ID_EXIT, "&Exit","Exit the editor.")
-
-#Bind a function to every action under the file menu
-frame.Bind(wx.EVT_MENU, scene.newFile, new)
-frame.Bind(wx.EVT_MENU, scene.openFile, open)
-frame.Bind(wx.EVT_MENU, scene.saveFile, save)
-frame.Bind(wx.EVT_MENU, closeFile, close)
-
-#Create all of the menu items under the Add menu
-plane = addmenu.Append(wx.ID_ANY, "&Plane","Create a new plane.")
-sphere = addmenu.Append(wx.ID_ANY, "&Sphere","Create a new sphere.")
-box = addmenu.Append(wx.ID_ANY, "&Box","Create a new box.")
-
-boxaberration = addmenu.Append(wx.ID_ANY, "&Box Aberration","Create a new box aberration.")
-sphereaberration = addmenu.Append(wx.ID_ANY, "&Sphere Aberration","Create a new sphere aberration.")
-
-sphereportal = addmenu.Append(wx.ID_ANY, "&Sphere Portal","Create a new sphere portal.")
-
-#Bind a function to every action under the add menu
-frame.Bind(wx.EVT_MENU, scene.addPlane, plane)
-frame.Bind(wx.EVT_MENU, scene.addSphere, sphere)
-frame.Bind(wx.EVT_MENU, scene.addBox, box)
-
-frame.Bind(wx.EVT_MENU, scene.addBoxAberration, boxaberration)
-frame.Bind(wx.EVT_MENU, scene.addSphereAberration, sphereaberration)
-
-frame.Bind(wx.EVT_MENU, scene.addSpherePortal, sphereportal)
-
-#Create/Bind a function to the runTest item
-runtest = runmenu.Append(wx.ID_ANY, "&Run Test","Run a test of the map within the actual game engine.")
-frame.Bind(wx.EVT_MENU, scene.runTest, runtest)
+	evtloop = wx.EventLoop()
+	old = wx.EventLoop.GetActive()
+	wx.EventLoop.SetActive(evtloop)
 
 
-#Create the tree view
-tree_ctrl = wx.TreeCtrl(frame,  -1, style=wx.TR_DEFAULT_STYLE | wx.TR_FULL_ROW_HIGHLIGHT | wx.TR_EDIT_LABELS | wx.TR_MULTIPLE)
-treeroot = tree_ctrl.AddRoot('Scene')
-tree_ctrl.ExpandAll()
+	#Create main window
+	frame = wx.Frame(None, wx.ID_ANY, "Non-Euclidean Level Editor", (10,10), (250,550))
+	frame.Show(True)
+
+	filemenu = wx.Menu()
+	addmenu = wx.Menu()
+	runmenu = wx.Menu()
+
+	frame.CreateStatusBar()
+
+	frame.Bind(wx.EVT_CLOSE, closeFile)
+
+	scripteditor.initialize()
+
+	menuBar = wx.MenuBar()
+	menuBar.Append(filemenu,"&File")
+	menuBar.Append(addmenu,"&Add")
+	menuBar.Append(runmenu,"&Run")
+	frame.SetMenuBar(menuBar)
+
+	#Create all of the actions under the file menu
+	new = filemenu.Append(wx.ID_NEW, "&New","Create a new scene.")
+	open = filemenu.Append(wx.ID_OPEN, "&Open","Open an existing scene file.")
+	save = filemenu.Append(wx.ID_SAVE, "&Save","Save the current scene file.")
+	close = filemenu.Append(wx.ID_EXIT, "&Exit","Exit the editor.")
+
+	#Bind a function to every action under the file menu
+	frame.Bind(wx.EVT_MENU, scene.newFile, new)
+	frame.Bind(wx.EVT_MENU, scene.openFile, open)
+	frame.Bind(wx.EVT_MENU, scene.saveFile, save)
+	frame.Bind(wx.EVT_MENU, closeFile, close)
+
+	#Create all of the menu items under the Add menu
+
+	for key, value in gameobjects.types.items():
+		addmenu_item = addmenu.Append(wx.ID_ANY, "&" + key,"Create a new " + key + ".")
+		
+		frame.Bind(wx.EVT_MENU, value.create, addmenu_item)
+
+	#Create/Bind a function to the runTest item
+	runtest = runmenu.Append(wx.ID_ANY, "&Run Test","Run a test of the map within the actual game engine.")
+	frame.Bind(wx.EVT_MENU, scene.runTest, runtest)
+
+
+	#Create the tree view
+	tree_ctrl = wx.TreeCtrl(frame,  -1, style=wx.TR_DEFAULT_STYLE | wx.TR_FULL_ROW_HIGHLIGHT | wx.TR_EDIT_LABELS | wx.TR_MULTIPLE)
+	treeroot = tree_ctrl.AddRoot('Scene')
+	tree_ctrl.ExpandAll()
+	
+	#Create the edit window
+	editframe = wx.Frame( None, -1, "Properties Window", (1280,10), (350,550) )
+
+	editframe.panel = PropertyGridPanel(editframe)
+
+	editframe.Show()
+	editframe.Bind(wx.EVT_CLOSE, closeFile)
+
+	currentselection = None
+	editframe.panel.delete.Hide()
+	
+	frame.Bind(wx.EVT_TREE_SEL_CHANGED, updateSelection, tree_ctrl)
 
 class PropertyGridPanel(wx.Panel):
 	def __init__(self, parent):
@@ -97,26 +103,12 @@ class PropertyGridPanel(wx.Panel):
 		self.SetSizer(topsizer)
 		topsizer.SetSizeHints(self)
 
-#Create the edit window
-editframe = wx.Frame( None, -1, "Properties Window", (1280,10), (350,550) )
-
-editframe.panel = PropertyGridPanel(editframe)
-
-editframe.Show()
-editframe.Bind(wx.EVT_CLOSE, closeFile)
-
-currentselection = None
-editframe.panel.delete.Hide()
-
-
 def updateSelection(event):
 	for obj in scene.objects.values():
 		if tree_ctrl.IsSelected(obj.treeitem):
 			obj.selected = True
 		else:
 			obj.selected = False
-
-frame.Bind(wx.EVT_TREE_SEL_CHANGED, updateSelection, tree_ctrl)
 
 def update():
 	global currentselection

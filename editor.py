@@ -4,7 +4,7 @@ try:
     from OpenGL.platform import win32
 except AttributeError:
     pass
-import pygame._view
+#import pygame._view
 	
 from math import *
 
@@ -16,15 +16,18 @@ from pygame.locals import *
 
 from camera import *
 
+import gameobjects
+
 import gui
 
 import threading
 
 from util import *
 
-from scene import *
+import scene
 
 import os
+
 
 
 DEFAULTSCREENSIZE = (1280,720)
@@ -134,17 +137,17 @@ def main():
 	
 	#Quick set of utilities for handling the edit mode
 	def isEdit(): #Are we in edit mode? Basically checks to see if any object has its edit value set to True
-		for obj in objects.values():
+		for obj in scene.objects.values():
 			if obj.edit:
 				return True
 		return False
 	def getEdit(): #What object is currently being edited
-		for obj in objects.values():
+		for obj in scene.objects.values():
 			if obj.edit:
 				return obj
 		return None
 	def endEdit(): #End edit mode - basically set every single objects edit value to false
-		for obj in objects.values():
+		for obj in scene.objects.values():
 			obj.edit = False
 	
 	#Main loop
@@ -165,14 +168,14 @@ def main():
 				
 				#Handle deleting of objects from scene
 				if event.key == K_DELETE and not isEdit(): #Can't delete objects in edit mode
-					for obj in objects.values():
+					for obj in scene.objects.values():
 						if obj.selected:
 							gui.tree_ctrl.Delete(obj.treeitem)
 							del objects[obj.name]
 			
 				#Hitting space duplicates the current selection
 				if event.key == K_SPACE and not isEdit(): #Can't duplicate objects in edit mode
-					for obj in objects.values():
+					for obj in scene.objects.values():
 						if obj.selected:
 							newobj = obj.duplicate( uniqueName("Duplicate") )
 							
@@ -185,7 +188,7 @@ def main():
 					if isEdit():
 						endEdit()
 					else:
-						for obj in objects.values():
+						for obj in scene.objects.values():
 							if obj.selected:
 								obj.edit = True
 								break
@@ -217,7 +220,7 @@ def main():
 							v = norm(v)
 							
 							move = dot( [ v[0], v[1] ], [relx, rely] )
-							for obj in objects.values():
+							for obj in scene.objects.values():
 								if obj.selected == True:
 									obj.move( 0, move, 0 )
 									
@@ -226,7 +229,7 @@ def main():
 							v = norm(v)
 							
 							move = dot( [ v[0], v[1] ], [relx, rely] )
-							for obj in objects.values():
+							for obj in scene.objects.values():
 								if obj.selected == True:
 									obj.move( move, 0, 0 )
 						if mousecolor == (0,0,255,255):
@@ -234,7 +237,7 @@ def main():
 							v = norm(v)
 							
 							move = dot( [ v[0], v[1] ], [relx, rely] )
-							for obj in objects.values():
+							for obj in scene.objects.values():
 								if obj.selected == True:
 									obj.move(0, 0, move)
 			if event.type == MOUSEBUTTONUP:
@@ -244,7 +247,7 @@ def main():
 							if keys[K_LSHIFT]:
 								pass
 							else:
-								for obj in objects.values():
+								for obj in scene.objects.values():
 									obj.selected = False
 								gui.tree_ctrl.UnselectAll()
 						
@@ -263,7 +266,7 @@ def main():
 							
 							tm = 10000.0
 							t = tm
-							for obj in objects.values():
+							for obj in scene.objects.values():
 								result, t = obj.collide(ro, rd)
 								if result and t  < tm:
 									tm = t
@@ -274,7 +277,7 @@ def main():
 								gui.tree_ctrl.ToggleItemSelection(selected.treeitem)
 								
 								selection = ""
-								for obj in objects.values():
+								for obj in scene.objects.values():
 									if obj.selected == True:
 										selection += obj.name
 										selection += " "
@@ -299,14 +302,14 @@ def main():
 		
 		selection = []
 		center = [0, 0, 0]
-		for obj in objects.values():
+		for obj in scene.objects.values():
 			if obj != getEdit() and obj.transparent == False:
 				obj.draw()
 			
 			if obj.selected == True:
 				selection.append(obj)
 				
-		for obj in objects.values():
+		for obj in scene.objects.values():
 			if obj != getEdit() and obj.transparent == True:
 				obj.draw()
 				
@@ -333,6 +336,9 @@ def main():
 		pygame.display.flip()
 		
 	pygame.quit()
+
+gui.initialize()
+scene.initialize()
 
 
 main() #Start the main code block

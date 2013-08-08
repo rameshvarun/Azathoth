@@ -3,9 +3,7 @@ from OpenGL.GLU import *
 
 from util import *
 
-import scene
 import gui
-
 
 import wx #import wxWidgets
 import wx.propgrid as wxpg
