@@ -11,6 +11,7 @@ import wx.propgrid as wxpg
 
 class Plane:
 	def __init__(self, name = None, x = 0, y = 1, z = 0, c = 0):
+		self.type = "Plane"
 		
 		self.name = name
 		
@@ -26,7 +27,7 @@ class Plane:
 		
 		self.selected = False
 		
-		self.type = "Plane"
+		
 		
 		self.reflectivity = 0.0
 		self.uniform = False
@@ -41,7 +42,9 @@ class Plane:
 		
 		self.pg = None
 		
-		scene.objects[self.name] = self
+		scene.objects[self.name] = self #Add back to scene
+		
+		#Add to gui tree
 		self.treeitem = gui.tree_ctrl.AppendItem(gui.treeroot, self.name)
 		gui.tree_ctrl.ExpandAll()
 		
@@ -50,6 +53,18 @@ class Plane:
 	@staticmethod
 	def create(event):
 		Plane()
+		
+	@staticmethod
+	def load(element):
+		newobject = Plane(element.getAttribute("name"), float(element.getAttribute("x")) , float(element.getAttribute("y")) , float(element.getAttribute("z")) , float(element.getAttribute("c")) )
+		
+		newobject.selected = (element.getAttribute("selected") == "True")
+		
+		newobject.uniform = (element.getAttribute("uniform") == "True")
+		newobject.reflectivity = float(element.getAttribute("reflectivity"))
+		newobject.recieve = (element.getAttribute("recieve") == "True")
+		
+		return newobject
 		
 	def duplicate(self, newname):
 		newplane = Plane(newname, self.x, self.y, self.z, -self.c)

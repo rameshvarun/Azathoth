@@ -11,6 +11,8 @@ import os
 import gui
 import scripteditor
 
+import gameobjects
+
 import wx
 
 from util import *
@@ -96,19 +98,12 @@ def openFile(event):
 		cam.y = float(camObj.getAttribute("y"))
 		cam.z = float(camObj.getAttribute("z"))
 	
-	#For every xml element with tag <Plane>
-	for plane in doc.getElementsByTagName("Plane"):
-		name = plane.getAttribute("name")
-		
-		objects[name] = Plane(name, float(plane.getAttribute("x")) , float(plane.getAttribute("y")) , float(plane.getAttribute("z")) , float(plane.getAttribute("c")) )
-		objects[name].selected = (plane.getAttribute("selected") == "True")
-		
-		objects[name].uniform = (plane.getAttribute("uniform") == "True")
-		objects[name].reflectivity = float(plane.getAttribute("reflectivity"))
-		objects[name].recieve = (plane.getAttribute("recieve") == "True")
-		
-		objects[name].treeitem = gui.tree_ctrl.AppendItem(gui.treeroot, name) #Add this plane to the tree view
+	#Load in all the object types
+	for class_name in gameobjects.types.keys():
+		for object_element in doc.getElementsByTagName( class_name ):
+			gameobjects.types[class_name].load(object_element)
 	
+	'''
 	#For every xml element with tag <Box>
 	for box in doc.getElementsByTagName("Box"):
 		name = box.getAttribute("name")
@@ -194,6 +189,7 @@ def openFile(event):
 		objects[name].cast = (sphere.getAttribute("cast") == "True")
 		
 		objects[name].treeitem = gui.tree_ctrl.AppendItem(gui.treeroot, name)
+	'''
 		
 	for script in doc.getElementsByTagName("script"):
 		scripteditor.SetText( getText(script) )
