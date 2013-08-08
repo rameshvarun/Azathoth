@@ -9,14 +9,13 @@ import scene
 import wx #import wxWidgets
 import wx.propgrid as wxpg
 
-class Plane:
+from gameobject import GameObject
+
+class Plane ( GameObject ):
 	def __init__(self, name = None, x = 0, y = 1, z = 0, c = 0):
 		self.type = "Plane"
 		
 		self.name = name
-		
-		if self.name == None:
-			self.name = scene.uniqueName("Plane")
 		
 		n = norm( [x, y, z] )
 		
@@ -25,30 +24,11 @@ class Plane:
 		self.z = n[2]
 		self.c = -c
 		
-		self.selected = False
-		
-		
-		
 		self.reflectivity = 0.0
-		self.uniform = False
-		self.recieve = False
-		
-		
-		self.edit = False
-		
-		self.transparent = False
 		
 		self.extension = 1000
 		
-		self.pg = None
-		
-		scene.objects[self.name] = self #Add back to scene
-		
-		#Add to gui tree
-		self.treeitem = gui.tree_ctrl.AppendItem(gui.treeroot, self.name)
-		gui.tree_ctrl.ExpandAll()
-		
-		print "Added plane " + self.name
+		GameObject.__init__(self)
 		
 	@staticmethod
 	def create(event):

@@ -8,6 +8,15 @@ def formatString(v):
 		return str(v[0]) + ", " + str(v[1]) + ", " + str(v[2])
 	if len(v) == 2:
 		return str(v[0]) + ", " + str(v[1])
+		
+#Turns a list of strings into a list of floats
+def toFloats(val):
+	returnval = []
+	
+	for s in val:
+		returnval.append( float(s) )
+		
+	return returnval
 
 #Cross-product of two Vectors
 def cross(v1, v2):

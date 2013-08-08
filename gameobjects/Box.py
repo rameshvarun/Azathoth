@@ -4,30 +4,46 @@ from OpenGL.GLU import *
 from util import *
 
 import gui
+import scene
 
 import wx #import wxWidgets
 import wx.propgrid as wxpg
 
-class Box:
-	def __init__(self, name, min, max):
+from gameobject import GameObject
+
+class Box ( GameObject ):
+	def __init__(self, name = None, min = [0,0,0], max = [5,5,5]):
 		self.name = name
+
 		self.min = min
 		self.max = max
-		self.selected = False
-		
-		self.edit = False
-		
-		self.uniform = False
-		self.cast = False
-		self.recieve = False
 		
 		self.type = "Box"
 		
-		self.transparent = False
-		
 		self.pointselection = -1
 		
-		self.pg = None
+		GameObject.__init__(self)
+		
+	@staticmethod
+	def create(event):
+		Box()
+		
+	@staticmethod
+	def load(element):
+		name = element.getAttribute("name")
+		min = element.getAttribute("min").split(",")
+		max = element.getAttribute("max").split(",")
+		
+		newobject = Box(name, toFloats(min), toFloats(max) )
+		newobject.selected = (element.getAttribute("selected") == "True")
+		
+		newobject.uniform = (element.getAttribute("uniform") == "True")
+		
+		newobject.cast = (element.getAttribute("cast") == "True")
+		newobject.recieve = (element.getAttribute("recieve") == "True")
+		
+		return newobject
+		
 	def duplicate(self, newname):
 		newbox = Box(newname, [self.min[0], self.min[1], self.min[2]], [self.max[0], self.max[1], self.max[2]])
 		

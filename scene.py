@@ -78,14 +78,7 @@ def openFile(event):
 	
 	doc = parse(currentfile)
 
-	#Turns a list of strings into a list of floats
-	def toFloats(val):
-		returnval = []
-		
-		for s in val:
-			returnval.append( float(s) )
-			
-		return returnval
+
 	
 	#For every xml element with tag <Camera>
 	for camObj in doc.getElementsByTagName("Camera"):
@@ -250,16 +243,6 @@ def runTest(event):
 	writeXML("Renderer\\test.xml") #Save file
 	
 	subprocess.Popen("Renderer\\NonEuclid.exe", cwd="Renderer\\") #Start game process
-
-def addBox(event=None):
-	name = uniqueName("Box")
-	
-	objects[name] = Box(name, [0,0,0], [5,5,5])
-	
-	print "Added " + name
-	
-	objects[name].treeitem = gui.tree_ctrl.AppendItem(gui.treeroot, name)
-	gui.tree_ctrl.ExpandAll()
 	
 def addSphere(event=None):
 	name =  uniqueName("Sphere")
