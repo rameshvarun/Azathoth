@@ -3,31 +3,53 @@ from OpenGL.GLU import *
 
 from util import *
 
+import gui
+import scene
+
 import wx #import wxWidgets
 import wx.propgrid as wxpg
 
+from gameobject import GameObject
 
-class BoxAberration:
-	def __init__(self, name, min, max):
+class BoxAberration ( GameObject ):
+	def __init__(self, name = None, min = [0,0,0], max = [5,5,5]):
 		self.name = name
 		self.min = min
 		self.max = max
-		self.selected = False
-		
-		self.edit = False
-		
-		self.uniform = False
-		self.cast = False
-		self.recieve = False
 		
 		self.type = "BoxAberration"
-		self.transparent = True
+		
 		
 		self.scale = [1.0, 1.0, 1.0]
 		
 		self.pointselection = -1
 		
-		self.pg = None
+		GameObject.__init__(self)
+		
+		self.transparent = True
+		
+	@staticmethod
+	def create(event):
+		BoxAberration()
+		
+	@staticmethod
+	def load(element):
+		name = element.getAttribute("name")
+		min = element.getAttribute("min").split(",")
+		max = element.getAttribute("max").split(",")
+		
+		newobject = BoxAberration(name, toFloats(min), toFloats(max) )
+		newobject.selected = (element.getAttribute("selected") == "True")
+		
+		newobject.uniform = (element.getAttribute("uniform") == "True")
+		
+		newobject.cast = (element.getAttribute("cast") == "True")
+		newobject.recieve = (element.getAttribute("recieve") == "True")
+		
+		newobject.scale = toFloats( element.getAttribute("scale").split(",") )
+		
+		return newobject
+		
 	def duplicate(self, newname):
 		newbox = BoxAberration(newname, [self.min[0], self.min[1], self.min[2]], [self.max[0], self.max[1], self.max[2]])
 		

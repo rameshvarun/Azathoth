@@ -213,18 +213,6 @@ def runTest(event):
 	writeXML("Renderer\\test.xml") #Save file
 	
 	subprocess.Popen("Renderer\\NonEuclid.exe", cwd="Renderer\\") #Start game process
-	
-
-#Add default box aberration to scene
-def addBoxAberration(event=None):
-	name = uniqueName("BoxAberration")
-	
-	objects[name] = BoxAberration(name, [0,0,0], [5,5,5])
-	
-	print "Added " + name
-	
-	objects[name].treeitem = gui.tree_ctrl.AppendItem(gui.treeroot, name)
-	gui.tree_ctrl.ExpandAll()
 
 #Adds a default sphere aberration to the scene (triggered by gui command)
 def addSphereAberration(event=None):
