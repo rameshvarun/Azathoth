@@ -2,6 +2,8 @@ import math
 from OpenGL.GL import *
 from OpenGL.GLU import *
 
+import pygame
+
 #Turns a vector of either length 3 or 2 into a string
 def formatString(v):
 	if len(v) == 3:
@@ -94,6 +96,22 @@ def iBox(min, max, ro, rd):
 	t = tmin
 			
 	return True, t
+	
+#Draws text in the 3D world
+def drawText3d(position, textString, size):     
+    font = pygame.font.Font (None, size)
+    textSurface = font.render(textString, True, (255,255,255,255), (0,0,0,255))     
+    textData = pygame.image.tostring(textSurface, "RGBA", True)     
+    glRasterPos3d(*position)     
+    glDrawPixels(textSurface.get_width(), textSurface.get_height(), GL_RGBA, GL_UNSIGNED_BYTE, textData)
+
+#Draws text based off of a 2D screen position
+def drawText2d(position, textString, size):     
+    font = pygame.font.Font (None, size)
+    textSurface = font.render(textString, True, (255,255,255,255), (0,0,0,255))     
+    textData = pygame.image.tostring(textSurface, "RGBA", True)     
+    glWindowPos2d(*position)     
+    glDrawPixels(textSurface.get_width(), textSurface.get_height(), GL_RGBA, GL_UNSIGNED_BYTE, textData)
 
 #Intersect a ray with a plane
 #(x, y, z) = normal of plane

@@ -81,21 +81,7 @@ def axes():
 	
 	glEnable(GL_LIGHTING)
 	
-#Draws text in the 3D world
-def drawText3d(position, textString, size):     
-    font = pygame.font.Font (None, size)
-    textSurface = font.render(textString, True, (255,255,255,255), (0,0,0,255))     
-    textData = pygame.image.tostring(textSurface, "RGBA", True)     
-    glRasterPos3d(*position)     
-    glDrawPixels(textSurface.get_width(), textSurface.get_height(), GL_RGBA, GL_UNSIGNED_BYTE, textData)
 
-#Draws text based off of a 2D screen position
-def drawText2d(position, textString, size):     
-    font = pygame.font.Font (None, size)
-    textSurface = font.render(textString, True, (255,255,255,255), (0,0,0,255))     
-    textData = pygame.image.tostring(textSurface, "RGBA", True)     
-    glWindowPos2d(*position)     
-    glDrawPixels(textSurface.get_width(), textSurface.get_height(), GL_RGBA, GL_UNSIGNED_BYTE, textData)
 			
 def main():
 	
@@ -177,11 +163,7 @@ def main():
 				if event.key == K_SPACE and not isEdit(): #Can't duplicate objects in edit mode
 					for obj in scene.objects.values():
 						if obj.selected:
-							newobj = obj.duplicate( uniqueName("Duplicate") )
-							
-							objects[newobj.name] = newobj
-							objects[newobj.name].treeitem = gui.tree_ctrl.AppendItem(gui.treeroot, newobj.name)
-			
+							newobj = obj.duplicate( None )
 			
 				#The e key enables edit mode
 				if event.key == K_e:
