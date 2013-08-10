@@ -157,7 +157,7 @@ def main():
 					for obj in scene.objects.values():
 						if obj.selected:
 							gui.tree_ctrl.Delete(obj.treeitem)
-							del objects[obj.name]
+							del scene.objects[obj.name]
 			
 				#Hitting space duplicates the current selection
 				if event.key == K_SPACE and not isEdit(): #Can't duplicate objects in edit mode
