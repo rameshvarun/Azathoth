@@ -3,12 +3,16 @@ from OpenGL.GLU import *
 
 from util import *
 
+import gui
+import scene
 
 import wx #import wxWidgets
 import wx.propgrid as wxpg
 
-class Sphere:
-	def __init__(self, name, x, y, z, r):
+from gameobject import GameObject
+
+class Sphere ( GameObject ):
+	def __init__(self, name = None, x = 1, y = 1, z = 1, r = 1):
 		self.name = name
 		self.x = x
 		self.y = y
@@ -16,22 +20,33 @@ class Sphere:
 		
 		self.r = r
 		
-		self.selected = False
-		
 		self.reflectivity = 0.0
-		self.uniform = False
-		self.cast = False
-		self.recieve = False
-		
-		self.edit = False
 		
 		self.type = "Sphere"
 		
-		self.transparent = False
-		
 		self.pointselection = -1
 		
-		self.pg = None
+		GameObject.__init__(self)
+		
+	@staticmethod
+	def load(element):
+		name = element.getAttribute("name")
+		
+		newobject = Sphere(name, float( element.getAttribute("x")) , float(element.getAttribute("y")) , float(element.getAttribute("z")) , float(element.getAttribute("r")) )
+		newobject.selected = ( element.getAttribute("selected") == "True")
+		
+		newobject.uniform = ( element.getAttribute("uniform") == "True")
+		
+		newobject.reflectivity = float( element.getAttribute("reflectivity"))
+		newobject.recieve = ( element.getAttribute("recieve") == "True")
+		newobject.cast = ( element.getAttribute("cast") == "True")
+		
+		return newobject
+		
+	@staticmethod
+	def create(event):
+		Sphere()
+		
 	def duplicate(self, newname):
 		newsphere = Sphere(newname, self.x, self.y, self.z, self.r)
 		

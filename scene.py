@@ -97,36 +97,6 @@ def openFile(event):
 			gameobjects.types[class_name].load(object_element)
 	
 	'''
-	#For every xml element with tag <Box>
-	for box in doc.getElementsByTagName("Box"):
-		name = box.getAttribute("name")
-		min = box.getAttribute("min").split(",")
-		max = box.getAttribute("max").split(",")
-		
-		objects[name] = Box(name, toFloats(min), toFloats(max) )
-		objects[name].selected = (box.getAttribute("selected") == "True")
-		
-		objects[name].uniform = (box.getAttribute("uniform") == "True")
-		
-		objects[name].cast = (box.getAttribute("cast") == "True")
-		objects[name].recieve = (box.getAttribute("recieve") == "True")
-		
-		objects[name].treeitem = gui.tree_ctrl.AppendItem(gui.treeroot, name)
-	
-	#For every xml element with tag <Sphere>
-	for sphere in doc.getElementsByTagName("Sphere"):
-		name = sphere.getAttribute("name")
-		
-		objects[name] = Sphere(name, float(sphere.getAttribute("x")) , float(sphere.getAttribute("y")) , float(sphere.getAttribute("z")) , float(sphere.getAttribute("r")) )
-		objects[name].selected = (sphere.getAttribute("selected") == "True")
-		
-		objects[name].uniform = (sphere.getAttribute("uniform") == "True")
-		
-		objects[name].reflectivity = float(sphere.getAttribute("reflectivity"))
-		objects[name].recieve = (sphere.getAttribute("recieve") == "True")
-		objects[name].cast = (sphere.getAttribute("cast") == "True")
-		
-		objects[name].treeitem = gui.tree_ctrl.AppendItem(gui.treeroot, name)
 	
 	#For every xml element with tag <BoxAberration>
 	for box in doc.getElementsByTagName("BoxAberration"):
@@ -243,15 +213,6 @@ def runTest(event):
 	writeXML("Renderer\\test.xml") #Save file
 	
 	subprocess.Popen("Renderer\\NonEuclid.exe", cwd="Renderer\\") #Start game process
-	
-def addSphere(event=None):
-	name =  uniqueName("Sphere")
-	objects[name] = Sphere(name, 1, 1, 1, 1)
-	
-	print "Added " + name
-	
-	objects[name].treeitem = gui.tree_ctrl.AppendItem(gui.treeroot, name)
-	gui.tree_ctrl.ExpandAll()
 	
 
 #Add default box aberration to scene
