@@ -96,29 +96,6 @@ def openFile(event):
 		for object_element in doc.getElementsByTagName( class_name ):
 			gameobjects.types[class_name].load(object_element)
 	
-	'''
-		
-	#For every xml element with tag <SpherePortal>
-	for sphere in doc.getElementsByTagName("SpherePortal"):
-		name = sphere.getAttribute("name")
-		
-		objects[name] = SpherePortal(name, float(sphere.getAttribute("x")) , float(sphere.getAttribute("y")) , float(sphere.getAttribute("z")) , float(sphere.getAttribute("r")) )
-		
-		objects[name].x2 = float(sphere.getAttribute("x2"))
-		objects[name].y2 = float(sphere.getAttribute("y2"))
-		objects[name].z2 = float(sphere.getAttribute("z2"))
-		
-		objects[name].selected = (sphere.getAttribute("selected") == "True")
-		
-		objects[name].uniform = (sphere.getAttribute("uniform") == "True")
-		
-		objects[name].reflectivity = float(sphere.getAttribute("reflectivity"))
-		objects[name].recieve = (sphere.getAttribute("recieve") == "True")
-		objects[name].cast = (sphere.getAttribute("cast") == "True")
-		
-		objects[name].treeitem = gui.tree_ctrl.AppendItem(gui.treeroot, name)
-	'''
-		
 	for script in doc.getElementsByTagName("script"):
 		scripteditor.SetText( getText(script) )
 	
@@ -178,12 +155,3 @@ def runTest(event):
 	writeXML("Renderer\\test.xml") #Save file
 	
 	subprocess.Popen("Renderer\\NonEuclid.exe", cwd="Renderer\\") #Start game process
-	
-def addSpherePortal(event=None):
-	name =  uniqueName("SpherePortal")
-	objects[name] = SpherePortal(name, 1, 1, 1, 1)
-	
-	print "Added " + name
-	
-	objects[name].treeitem = gui.tree_ctrl.AppendItem(gui.treeroot, name)
-	gui.tree_ctrl.ExpandAll()
