@@ -25,6 +25,9 @@ def initialize():
 	script_ctrl.SetKeyWords(0, luakeywords)
 
 	scriptedit.Show(True)
+	
+	#Load script template
+	SetText( open("template.lua").read() )
 
 	#From Yellow Brain Styling Example
 	#http://www.yellowbrain.com/stc/styling.html#example
