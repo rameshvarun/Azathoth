@@ -75,7 +75,10 @@ class Point ( GameObject ):
 		glBegin(GL_LINES)
 		
 		#Y axis
-		glColor3f(255,255,255)
+		if self.selected:
+			glColor3f(0,1,0)
+		else:
+			glColor3f(1, 1, 1)
 		
 		glVertex3f(self.x, self.y - self.r, self.z)
 		glVertex3f(self.x, self.y + self.r, self.z)
