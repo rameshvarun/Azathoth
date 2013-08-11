@@ -8,6 +8,9 @@ def GetText():
 
 def SetText(text):
 	global script_ctrl
+	
+	text = text.replace("\n\n", "\n")
+	
 	script_ctrl.SetText(text)
 	
 def initialize():
