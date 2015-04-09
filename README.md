@@ -1,7 +1,7 @@
 Azathoth
 ========
 
-![](http://31.media.tumblr.com/9994375c7eb0dfa65459a7c025a29563/tumblr_mrc6x6TRvH1sbw163o1_1280.png)
+![](http://i.imgur.com/x6RsH6Q.png)
 
 A level editor for non-euclidean worlds. Designed to be used with a real-time raytracer that I am developing.
 
